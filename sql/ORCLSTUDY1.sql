@@ -1,0 +1,86 @@
+SELECT *
+FROM CHANNEL;
+
+SELECT UNIQUE(제휴사)
+FROM CHANNEL;
+
+SELECT COUNT(*)
+FROM CHANNEL
+WHERE 제휴사 LIKE 'C_O%';
+
+SELECT COUNT(UNIQUE(고객번호))
+FROM CHANNEL;
+
+SELECT COUNT(고객번호)
+FROM CHANNEL;
+
+------------------------------------------------------------------------
+--Q19. LMEMBERS 데이터에서 고객별 구매금액의 합계를 구한 CUSPUR 테이블을 생성한 후 CUST 테이블과 
+--고객번호를 기준으로 결합하여 출력하세요.
+CREATE TABLE CUSPUR AS
+(SELECT 고객번호, SUM(구매금액)
+FROM PRODPUR
+GROUP BY 고객번호);
+
+
+--Q20.purprd 테이블의 2년간 구매금액을 연간 단위로 분리하여 구매14, 구매15 컬럼을 포함하는 AMT_YEAR 테이블을 
+--생성한 후 14년과 15년의 구매금액 차이를 표시하는 증감 컬럼을 추가하여 출력하세요.
+--단, 고객번호, 제휴사별로 구매금액 및 증감이 구분되어야 함.
+
+CREATE TABLE CUST AS SELECT * FROM CUSTDEMO;
+
+ALTER TABLE CUST 
+MODIFY(고객번호 PRIMARY KEY);
+
+CREATE TABLE COMP AS SELECT * FROM COMPET;
+
+ALTER TABLE COMP 
+MODIFY( 고객번호 REFERENCES CUST(고객번호));
+
+COMMIT;
+
+CREATE TABLE CH AS SELECT * FROM CHANNEL;
+
+ALTER TABLE CH 
+MODIFY( 고객번호 REFERENCES CUST(고객번호));
+
+CREATE TABLE MEMBER AS SELECT * FROM MEMBERS;
+
+ALTER TABLE MEMBER 
+MODIFY( 고객번호 REFERENCES CUST(고객번호));
+
+COMMIT;
+
+CREATE TABLE PURPRD AS SELECT * FROM PRODPUR;
+
+ALTER TABLE PURPRD 
+MODIFY( 고객번호 REFERENCES CUST(고객번호));
+
+SELECT 제휴사,COUNT(제휴사)
+FROM prodcl
+GROUP BY 제휴사;
+
+CREATE TABLE PRDCL AS SELECT * FROM PRODCL;
+
+SELECT *
+FROM PRODCL
+WHERE 대분류코드 = 1 AND 중분류코드 = 0101;
+
+SELECT *
+FROM PRODCL
+WHERE 대분류코드 = 1 AND 중분류코드 = 0102;
+
+SELECT *
+FROM PRODCL
+WHERE 대분류코드 = 1 AND 중분류코드 = 0103;
+
+SELECT UNIQUE(중분류코드)
+FROM PRODCL
+ORDER BY 중분류코드;
+
+SELECT UNIQUE(제휴사)
+FROM CHANNEL;
+
+SELECT *
+FROM CH;
+
